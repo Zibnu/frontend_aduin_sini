@@ -3,7 +3,7 @@ import apiServices from '../utils/api'
 import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
 import { Link,useNavigate } from 'react-router-dom'
-import authImage from "../assets/images/authImage.png"
+import authImage from "../assets/images/hrtoAuth.png"
 
 function Regis() {
     const [form , setForm] = useState({
@@ -21,7 +21,8 @@ function Regis() {
         const fetchClasses = async () => {
             try {
                 const res = await apiServices.get("/class/get_allClass");
-                setClasses(res.data.data)
+                setClasses(res.data.data);
+                // console.log(res.data);
             } catch (error) {
                 toast.error(error.response?.data?.message || "Gagal Mendapatkan Data Class");
                 console.error(error.response?.data?.message);
@@ -58,13 +59,10 @@ function Regis() {
         animate={{ opacity : 1, y : 0}}
         className="bg-[#FFFFFF] rounded-2xl shadow-lg flex w-full max-w-4xl overflow-hidden">
             {/* Left */}
-            <div className="hidden md:flex w-1/2 bg-[#2563EB] text-white p-8 flex-col justify-center">
-                <img src={authImage} alt="Hero Auth" className="w-48 sm:w-56 md:w-64 mt-4" />
-                <p className="text-2xl font-bold mb-4">
-                    Ayo Laporkan Sarana dan Prasarana
-                </p>
-                <p className="text-sm opacity-90">
-                    Sekolah yang Mengalami Kerusakan
+            <div className="hidden md:flex w-1/2 bg-[#2563EB] text-white p-8 flex-col items-center justify-center gap-6 text-center">
+                <img src={authImage} alt="Hero Auth" className="w-full max-w-[220px] object-contain" />
+                <p className="text-lg md:text-xl font-bold leading-relaxed">
+                    Ayo Laporkan Sarana dan Prasarana Sekolah yang Mengalami Kerusakan
                 </p>
             </div>
 
@@ -118,10 +116,10 @@ function Regis() {
                         disabled={loading}
                         className="w-full bg-[#F59E0B] hover:bg-[#c6820b] text-white py-2 rounded-lg font-semibold transition"
                         >
-                            {loading ? "loading" : "Regis"}
+                            {loading ? "loading" : "Daftar"}
                         </button>
                         <div className="mt-4 text-center">
-                            <p className="text-sm text-[#FFFFFF]">
+                            <p className="text-sm text-[#334155]">
                                 Sudah Punya Akun?{" "}
                                 <Link 
                                 to="/login"
