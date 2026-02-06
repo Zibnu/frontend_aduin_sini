@@ -8,11 +8,10 @@ import toast from 'react-hot-toast'
 
 function Login() {
     const navigate = useNavigate();
-    const [form, setForm] = ({
+    const [form, setForm] = useState({
         nis : "",
         password : "",
     });
-
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
@@ -26,16 +25,16 @@ function Login() {
         setError("");
         setLoading(true);
 
-        if(!form.nama || !form.password) {
-            return toast.error("Semua Field Wajib Diisi");
-        };
+        // if(!form.nama || !form.password) {
+        //     return toast.error("Semua Field Wajib Diisi");
+        // };
 
         try {
             const res = await apiServices.post("/auth/login", form);
 
-            const token = res.data.data.token;
-            const user = res.data.data.user.id_user;
-            const role = res.data.data.user.role;
+            const token = res.data.token;
+            const user = res.data.data.id_user;
+            const role = res.data.data.role;
 
             if(!token) {
                 console.error("Token Not Found in Response");
@@ -51,11 +50,19 @@ function Login() {
             if(role === "admin") {
                 navigate("/admin/dashboard");
             }else {
-                navigate("")
+                navigate("/")
             }
         } catch (error) {
-            console.error("Error Login" ,error.response?.data || error.message);
-            toast.error(error.response?.data?.message || "NIS Atau Password Salah");
+            const status = error.response.status;
+            const messageError = error.response.data.message;
+
+            if(status === 404) {
+                toast.error("Akun Belum Terdaftar");
+            } else if( status === 401) {
+                toast.error("Password Salah");
+            } else {
+                toast.error(messageError || "Internal Server Error");
+            }
         }finally {
             setLoading(false);
         }
@@ -91,15 +98,17 @@ function Login() {
                         placeholder='NIS'
                         value={form.nis}
                         onChange={handleChange}
+                        required
                         className='w-full px-4 py-2 rounded-lg border border-[#CBD5E1] placeholder-[#334155] focus:ring-2 focus:ring-[#3B82F6] outline-none transition'
                         />
 
                         <input 
-                        type="text" 
+                        type="password" 
                         name='password'
                         placeholder='Password'
                         value={form.password}
                         onChange={handleChange}
+                        required
                         className='w-full px-4 py-2 rounded-lg border border-[#CBD5E1] placeholder-[#334155] focus:ring-2 focus:ring-[#3B82F6] outline-none transition'
                         />
 

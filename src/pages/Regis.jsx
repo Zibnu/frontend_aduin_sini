@@ -132,7 +132,7 @@ function Regis() {
                             <p className="text-sm text-[#334155]">
                                 Sudah Punya Akun?{" "}
                                 <Link
-                                    to="/login"
+                                    to={"/login"}
                                     className='text-[#2563EB] font-semibold'
                                 >
                                     Masuk
