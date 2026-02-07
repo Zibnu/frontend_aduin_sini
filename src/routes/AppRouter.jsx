@@ -4,6 +4,7 @@ import Regis from "../pages/Regis";
 import Login from "../pages/Login";
 import Home from "../pages/Home";
 import History from "../pages/History";
+import CreateReport from "../pages/CreateReport";
 
 export default function AppRouter () {
     return (
@@ -13,6 +14,7 @@ export default function AppRouter () {
             <Route element={<UserLayout/>}>
                 <Route path="/" element={<Home/>}></Route>
                 <Route path="/history" element={<History/>}></Route>
+                <Route path="/report" element={<CreateReport/>}></Route>
             </Route>
         </Routes>
     );

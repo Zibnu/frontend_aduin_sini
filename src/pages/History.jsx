@@ -8,7 +8,7 @@ import { FaGears } from "react-icons/fa6";
 import { HiCheckCircle } from "react-icons/hi2";
 import { FaTimesCircle } from "react-icons/fa";
 import { MdNavigateNext, MdNavigateBefore } from "react-icons/md";
-import iconNoHistory from "../assets/images/nani!!.png"
+import iconNoHistory from "../assets/images/heroNoHistory.png"
 
 function History() {
     const [reports, setReports] = useState([]);
