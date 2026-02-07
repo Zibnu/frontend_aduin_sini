@@ -3,6 +3,7 @@ import UserLayout from "../layouts/UserLayout";
 import Regis from "../pages/Regis";
 import Login from "../pages/Login";
 import Home from "../pages/Home";
+import History from "../pages/History";
 
 export default function AppRouter () {
     return (
@@ -11,6 +12,7 @@ export default function AppRouter () {
             <Route path="/login" element={<Login/>}/>
             <Route element={<UserLayout/>}>
                 <Route path="/" element={<Home/>}></Route>
+                <Route path="/history" element={<History/>}></Route>
             </Route>
         </Routes>
     );
