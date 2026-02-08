@@ -1,58 +1,80 @@
-import {useState} from 'react';
-import apiServices from '../utils/api';
-import { motion } from 'framer-motion';
-import { useQuery, useMutation, useQueryClient} from "@tanstack/react-query";
-import { GiSandsOfTime } from "react-icons/gi";
+import React, { useEffect, useState } from 'react'
+import apiServices from '../utils/api'
+import { motion } from 'framer-motion'
+import { MdNotificationsActive ,MdNavigateNext, MdNavigateBefore } from "react-icons/md";
+import { FaCommentDots ,FaTimesCircle } from "react-icons/fa";
 import { FaGears } from "react-icons/fa6";
+import { GiSandsOfTime } from "react-icons/gi";
 import { HiCheckCircle } from "react-icons/hi2";
-import { FaTimesCircle, FaArrowDown, FaMinus, FaExclamationTriangle } from "react-icons/fa";
-import { MdNotificationsActive, MdNavigateNext, MdNavigateBefore } from "react-icons/md";
+import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
-
 function Notification() {
+    const [notifications, setNotifications] = useState([]);
+    const [pagination, setPagination] = useState({
+        currentPage : 1,
+        totalPage : 1,
+    });
+    const [loading, setLoading] = useState(true);
+
     const token = localStorage.getItem("token");
-    const [page, setPage] = useState(1);
-    const queryClient = useQueryClient();
     const navigate = useNavigate();
 
-    const fetchNotif = async () => {
-        const res = await apiServices.get(`/notif/my_notif?page=${page}`, 
-            {
+    const fetchNotif = async (page = 1) => {
+        try {
+            if(!token) return;
+
+            setLoading(true);
+
+            const res = await apiServices.get(`/notif/my_notif?page=${page}`, {
                 headers : {
                     Authorization : `Bearer ${token}`,
                 },
-            },
-        );
-        return res.data;
+            });
+
+            setNotifications(res.data.data);
+            setPagination(res.data.pagination);
+        } catch (error) {
+            console.error(error);
+            toast.error(error.response?.data?.message || "Gagal Mendapatkan Notifications");
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const { data, isLoading } = useQuery({
-        queryKey : ["notifications", page],
-        queryFn : fetchNotif,
-        keepPreviousData : true,
-        enabled : !!token,
-    });
+    useEffect(() => {
+        fetchNotif(pagination.currentPage);
+    }, [pagination.currentPage]);
 
-    const markAsRead = useMutation({
-        mutationFn : async (id) => {
+    const handleChangePage = (page) => {
+        if(page >= 1 && page <= pagination.totalPage) {
+            fetchNotif(page);
+            setPagination((prev) => ({
+                ...prev,
+                currentPage : page,
+            }));
+        }
+    };
+
+    const markAsRead = async (id) => {
+        try {
             await apiServices.patch(`/notif/read/${id}`, null, {
                 headers : {
                     Authorization : `Bearer ${token}`,
                 },
             });
-        },
-        onSuccess : () => {
-            queryClient.invalidateQueries(["notifications"]);
-        },
-    });
+        } catch (error) {
+            console.error(error);
+            toast.error(error.response?.data?.message || "Gagal Mengubah Mark in Notif");
+        }
+    };
 
-    const handleClickNotif = (notif) => {
+    const handleClickNotif = async (notif) => {
         if(!notif.is_read) {
-            markAsRead.mutate(notif.id_notifications);
+            await markAsRead(notif.id_notifications);
         }
 
-        navigate(`/report/${notif.report.id_report}`);
+        navigate(`/history/${notif.report.id_report}`);
     };
 
     const formatDate = (date) => {
@@ -69,123 +91,114 @@ function Notification() {
         menunggu : {
             icon : GiSandsOfTime,
             color : "text-[#f59e0b]",
-            label : "Laporan Menunggu",
         },
         diproses : {
             icon : FaGears,
             color : "text-[#3b82f6]",
-            label : "Laporan Diproses",
         },
         selesai : {
             icon : HiCheckCircle,
             color : "text-[#15b5b0]",
-            label : "Laporan Selesai",
         },
         ditolak : {
             icon : FaTimesCircle,
             color : "text-[#ef4444]",
-            label : "Laporan Ditolak",
         },
+    }
+
+    if(!loading && notifications.length === 0 ) {
+        return (
+            <div className="flex flex-col items-center justify-center h-[70vh] text-center">
+                <MdNotificationsActive
+                size={80}
+                className='text-gray-300 mb-4'
+                />
+                <p className="text-gray-500 font-medium">Belum Ada Notifikasi</p>
+            </div>
+        );
     };
 
-    const prioritasConfig = {
-        rendah : {
-            icon : FaArrowDown,
-            className : "bg-gray-200 text-gray-700",
-            label : "Rendah",
-        },
-        sedang : {
-            icon : FaMinus,
-            className : "bg-purple-200 text-purple-700",
-            label : "Sedang",
-        },
-        tinggi : {
-            icon : FaExclamationTriangle,
-            className : "bg-red-200 text-red-700",
-            label : "Tinggi",
-        },
-    };
-
-    if(isLoading) return <div className="text-center text-gray-600">Loading....</div>
+    if(loading) return <div className="text-center mt-20 text-gray-500">Loading....</div>
 
     return (
         <motion.div
         initial={{opacity : 0, y : 20}}
         animate={{opacity : 1, y : 0}}
-        className='min-h-screen bg-[#ecedec] rounded-xl p-8'
+        className='min-h-screen bg-gray-100 p-8'
         >
-            <h2 className="text-2xl font-bold text-[#2563eb] mb-2"> 
-                <MdNotificationsActive size={15}/> Notifikasi
-                </h2>
-                <p className="text-[#1e293b] mb-6">
-                    Lihat Semua Pembaruan Laporan Anda
-                </p>
+            <h2 className="text-2xl font-bold text-[#2563EB] flex items-center gap-2">
+                <MdNotificationsActive/> Notifikasi
+            </h2>
 
-                <div className="space-y-4">
-                    {data?.data?.map((notif) => {
-                        const status = statusConfig[notif.report.status];
-                        const prioritas = prioritasConfig[notif.report.prioritas];
+            <p className="text-[#1e293b] mb-6">Lihat Semua Pembaruan Report Anda</p>
 
-                        const StatusIcon = status.icon;
-                        const PriorityIcon = prioritas.icon;
+            <div className="space-y-4">
+                {notifications.map((notif) => {
+                    const report = notif.report;
 
-                        return (
-                            <motion.div
-                            key={notif.id_notifications}
-                            layout
-                            whileHover={{scale : 1.01 }}
-                            onClick={() => handleClickNotif(notif)}
-                            className="cursor-pointer bg-[#ffffff] rounded-xl p-5 shadow-sm flex justify-between items-start">
-                                <div className="flex gap-4">
-                                    <StatusIcon size={32} className={status.color} />
-                                    <div>
-                                        <h3 className="font-semibold text-[#334155]">
-                                            {status.label}
-                                        </h3>
+                    const isComment = notif.message?.toLowerCase().includes("comment");
 
-                                        <p className="text-[#64748b]">
-                                            {notif.report.judul}
-                                        </p>
+                    const latestComment = report.comments?.at(-1)?.isi_komentar;
 
-                                        <div className={`inline-flex items-center gap-1 mt-2 px-2 py-1 rounded-full text-xs font-medium ${prioritas.className}`}>
-                                            <PriorityIcon size={32} />
-                                            {prioritas.label}
-                                        </div>
+                    const status = statusConfig[report.status];
 
-                                        <p className="text-[#1e293b] text-sm mt-2">
-                                            {formatDate(notif.createdAt)}
-                                        </p>
-                                    </div>
-                                </div>
+                    const StatusIcon = isComment ? FaCommentDots : status.icon;
 
-                                {!notif.is_read && (
-                                    <div className="w-2.5 h-2.5 bg-[#2563eb] rounded-full mt-2" />
-                                )}
-                            </motion.div>
-                        );
-                    })}
-                </div>
+                    const iconColor = isComment ? "text-indigo-500" : status.color;
 
-                <div className="flex justify-center gap-4 mt-8">
-                    <button 
-                    disabled={page === 1}
-                    onClick={() => setPage(page - 1)}
-                    className="px-4 py-2 bg-gray-600 disabled:bg-gray-200">
-                        <MdNavigateBefore/>
-                    </button>
+                    const description = isComment ? latestComment : report.judul;
 
-                    <span className="px-4 py-2 font-semibold">
-                        Page {data?.pagination?.currentPage} of {data?.pagination?.totalPage}
-                    </span>
+                    return (
+                        <motion.div 
+                        key={notif.id_notifications}
+                        onClick={() => handleClickNotif(notif)}
+                        className="cursor-pointer bg-[#ffffff] rounded-xl p-5 shadow-sm flex hover:shadow-lg justify-between gap-4">
+                            <StatusIcon size={34} className={iconColor}/>
 
-                    <button 
-                    disabled={page === data?.pagination?.totalPage}
-                    onClick={() => setPage(page + 1)}
-                    className="px-4 py-2 bg-gray-600 disabled:bg-gray-200">
-                        <MdNavigateNext/>
-                    </button>
-                </div>
+                            <div className="flex-1">
+                                <h3 className="font-semibold text-[#334155]">
+                                    {notif.message}
+                                </h3>
 
+                                <p className="text-[#64748b]">
+                                    {description}
+                                </p>
+
+                                <p className="text-sm text-[#64748b] mt-1">
+                                    {formatDate(notif.createdAt)}
+                                </p>
+                            </div>
+
+                            {!notif.is_read && (
+                                <div className="w-2.5 h-2.5 bg-[#2563EB] rounded-full mt-2" />
+                            )}
+                        </motion.div>
+                    );
+                })}
+            </div>
+
+            <div className="flex justify-center gap-4 mt-8 items-center">
+                <button 
+                onClick={() => handleChangePage(pagination.currentPage - 1)}
+                disabled={pagination.currentPage === 1}
+                className="px-4 py-2 cursor-pointer text-gray-600 disabled:text-gray-200 disabled:cursor-not-allowed">
+                    <MdNavigateBefore size={20}/>
+                </button>
+
+                <span className="font-semibold">
+                    Page {pagination.currentPage} Of {pagination.totalPage}
+                </span>
+
+                <button 
+                onClick={() => handleChangePage(pagination.currentPage + 1)}
+                disabled={pagination.currentPage === pagination.totalPage}
+                className="px-4 py-2 cursor-pointer text-gray-600 disabled:text-gray-200 disabled:cursor-not-allowed">
+                    <MdNavigateNext size={20}/>
+                </button>
+            </div>
+
+
+            
         </motion.div>
     )
 }

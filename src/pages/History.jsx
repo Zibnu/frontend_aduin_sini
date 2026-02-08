@@ -16,7 +16,7 @@ function History() {
         currentPage : 1,
         totalPage : 1,
     });
-    const [loading, setLoading] = useState(true);
+    // const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
     const token = localStorage.getItem("token");
@@ -25,11 +25,11 @@ function History() {
     const fetchReports = async ( page = 1) => {
         try {
             if(!token) {
-                setLoading(false);
+                // setLoading(false);
                 return
             }
 
-            setLoading(true)
+            // setLoading(true)
 
             const res = await apiServices.get(`/report/my_reports?page=${page}`, {
                 headers : { 
@@ -43,7 +43,7 @@ function History() {
             console.error(error.response?.data?.message);
             toast.error(error.response?.data?.message || "Gagal Mendapatkan Data History");
         } finally {
-            setLoading(false);
+            // setLoading(false);
         }
     };
 
@@ -90,7 +90,7 @@ function History() {
         tinggi : "bg-red-200 text-red-700",
     };
 
-    if(loading) return <div className="text-center text-indigo-400">Loading....</div>
+    // if(loading) return <div className="text-center text-indigo-400">Loading....</div>
     
 
     return (
@@ -173,7 +173,7 @@ function History() {
                         handlePageChange(pagination.currentPage - 1)
                     }
                     disabled={pagination.currentPage === 1}
-                    className="px-4 py-2 text-gray-600 disabled:text-gray-300"
+                    className="px-4 py-2 cursor-pointer text-gray-600 disabled:text-gray-300 disabled:cursor-not-allowed"
                     >
                         <MdNavigateBefore size={20} />
                     </button>
@@ -187,7 +187,7 @@ function History() {
                         handlePageChange(pagination.currentPage + 1)
                     }
                     disabled={pagination.currentPage === pagination.totalPage}
-                    className="px-4 py-2 text-gray-600 disabled:text-gray-300">
+                    className="px-4 py-2 cursor-pointer text-gray-600 disabled:text-gray-300 disabled:cursor-not-allowed">
                         <MdNavigateNext size={20} />
                     </button>
                 </div>

@@ -151,7 +151,7 @@ function CreateReport() {
                     className='w-full p-4 rounded-lg border border-[#CBD5E1] placeholder-[#334155] focus:ring-2 focus:ring-[#3B82F6] outline-none transition'
                     required
                     >
-                        <option value="">Ruangan</option>
+                        <option value="" disabled>Ruangan</option>
                         {rooms.map((room) => (
                             <option 
                             key={room.id_room}
@@ -170,7 +170,7 @@ function CreateReport() {
                     className='w-full mb-4 p-4 rounded-lg border border-[#CBD5E1] placeholder-[#334155] focus:ring-2 focus:ring-[#3B82F6] outline-none transition'
                     required
                     >
-                        <option value="">Kategori</option>
+                        <option value="" disabled>Kategori</option>
                         {categories.map((cat) => (
                             <option 
                             key={cat.id_category}
@@ -184,7 +184,7 @@ function CreateReport() {
                     <label className='w-full mb-6 flex items-center gap-3 p-4 cursor-pointer rounded-lg border border-[#CBD5E1] placeholder-[#334155] focus:ring-2 focus:ring-[#3B82F6] outline-none transition'>
                         <MdOutlineCloudUpload />
                         <span>
-                            {form.foto ? form.foto.name : "Upload foto Kerusakan (MAX 5MB)"}
+                            {form.foto ? form.foto.name : "Upload foto Kerusakan"} <span className='text-red-500 text-xs'>(MAX 5MB)</span>
                         </span>
                         <input 
                         type="file" 
