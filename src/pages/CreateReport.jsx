@@ -30,7 +30,7 @@ function CreateReport() {
                 setCategories(catRes.data.data);
                 setRooms(roomRes.data.data);
             } catch (error) {
-                console.error(error.response?.data?.message);
+                console.error(error);
                 toast.error(error.response?.data?.message || "Gagal Mengambil Data Category and Room in Create Report");
             }
         };
@@ -68,7 +68,7 @@ function CreateReport() {
         try {
             setLoading(true);
 
-            const formData = new formData();
+            const formData = new FormData();
             formData.append("judul", form.judul);
             formData.append("deskripsi", form.deskripsi);
             formData.append("prioritas", form.prioritas);
@@ -79,7 +79,7 @@ function CreateReport() {
             await apiServices.post("/report/create_report", formData, {
                 headers : {
                     Authorization : `Bearer ${token}`,
-                    "Content-Type" : "multipart/form-data",
+                    // "Content-Type" : "multipart/form-data",
                 },
             });
 
@@ -138,6 +138,7 @@ function CreateReport() {
                     className='w-full p-4 rounded-lg border border-[#CBD5E1] placeholder-[#334155] focus:ring-2 focus:ring-[#3B82F6] outline-none transition'
                     required
                     >
+                        <option value="" disabled>Prioritas</option>
                         <option value="rendah">Rendah</option>
                         <option value="sedang">Sedang</option>
                         <option value="tinggi">Tinggi</option>
@@ -150,7 +151,7 @@ function CreateReport() {
                     className='w-full p-4 rounded-lg border border-[#CBD5E1] placeholder-[#334155] focus:ring-2 focus:ring-[#3B82F6] outline-none transition'
                     required
                     >
-                        <option value="">Pilih Ruangan</option>
+                        <option value="">Ruangan</option>
                         {rooms.map((room) => (
                             <option 
                             key={room.id_room}
@@ -169,7 +170,7 @@ function CreateReport() {
                     className='w-full mb-4 p-4 rounded-lg border border-[#CBD5E1] placeholder-[#334155] focus:ring-2 focus:ring-[#3B82F6] outline-none transition'
                     required
                     >
-                        <option value="">Pilih Kategori</option>
+                        <option value="">Kategori</option>
                         {categories.map((cat) => (
                             <option 
                             key={cat.id_category}

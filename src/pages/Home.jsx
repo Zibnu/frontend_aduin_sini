@@ -91,13 +91,13 @@ function Home() {
             <h2 className="text-2xl font-bold mb-1 text-[#2563EB]">
                 Dashboard
             </h2>
-            <h3 className="text-xl font-semibold mb-6">
+            <h3 className="text-xl text-[#1e293b] font-semibold mb-6">
                 Selamat Datang {user?.nama || "-"}
             </h3>
 
             {/* Data Siswa */}
             <div className="bg-[#ffffff] rounded-xl p-6 shadow mb-8 hover:shadow-lg transition">
-                <h4 className="font-bold mb-4">Data Siswa</h4>
+                <h4 className="font-bold text-[#231f20] mb-4">Data Siswa</h4>
 
                 {!token ? (
                     <p className="text-gray-500">
