@@ -9,11 +9,17 @@ import { FaTimesCircle, FaCommentDots } from "react-icons/fa";
 import { MdOutlineSubdirectoryArrowLeft } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import { useNavigate, useParams } from 'react-router-dom';
+import { VscLocation } from "react-icons/vsc";
+import { TbCategory } from "react-icons/tb";
+import { LiaUserAstronautSolid } from "react-icons/lia";
+import { FaUserGraduate } from "react-icons/fa";
 
 function DetailReport() {
     const { id } = useParams();
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
+    const userId = Number(localStorage.getItem("userId"));
+    // console.log(typeof(userId))
 
     const [report, setReport] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -28,6 +34,7 @@ function DetailReport() {
                 },
             });
             setReport(res.data.data);
+            // console.log(res);
         } catch (error) {
             console.error(error);
             toast.error(error.response?.data?.message || "Gagal Mendapatkan Detail Report");
@@ -77,32 +84,41 @@ function DetailReport() {
 
     const statusConfig = {
         menunggu : {
-            color : "#f59e0b",
-            icon : <GiSandsOfTime/>,
-            label : "Menunggu",
+            className : "text-[#f59e0b] bg-yellow-200",
+            icon : GiSandsOfTime,
         },
         diproses : {
-            color : "#3b82f6",
-            icon : <FaGears/>,
-            label : "Diproses",
+            className : "text-[#3b82f6] bg-blue-200",
+            icon : FaGears,
         },
         selesai : {
-            color : "#15b5b0",
-            icon : <HiCheckCircle/>,
-            label : "Selesai",
+            className : "text-[#15b5b0] bg-green-200",
+            icon : HiCheckCircle,
         },
         ditolak : {
-            color : "#ef4444",
-            icon : <FaTimesCircle/>,
-            label : "Ditolak"
+            className : "text-[#ef4444] bg-red-200",
+            icon : FaTimesCircle,
         }
     };
+
+    const StatusIcon = statusConfig[report.status].icon;
 
     const priorityConfig = {
         rendah : "bg-gray-200 text-gray-700",
         sedang : "bg-purple-200 text-purple-700",
         tinggi : "bg-red-200 text-red-700",
     };
+
+    const roleConfig = {
+        admin : {
+            icon : LiaUserAstronautSolid,
+            className :  "bg-blue-200 text-blue-800",
+        },
+        siswa : {
+            icon : FaUserGraduate,
+            className : "bg-green-200 text-green-800"
+        }
+    }
 
     return (
         <motion.div
@@ -112,33 +128,54 @@ function DetailReport() {
         >
             <button 
             onClick={() => navigate("/history")}
-            className="text-[#2563EB] mb-4 flex items-center gap-2">
+            className="text-[#2563EB] cursor-pointer mb-4 flex items-center hover:text-[#0c3da5] gap-2">
                 <MdOutlineSubdirectoryArrowLeft /> Kembali ke History
             </button>
 
             <div className="bg-[#ffffff] rounded-xl shadow-md p-8 relative">
                 {/* Edit Icon  */}
                 <CiEdit
-                className='absolute top-6 right-6 cursor-pointer text-gray-500 hover:text-black'
+                className='absolute top-6 right-6 cursor-pointer text-[#231f20] hover:text-[#4a4244]'
                 size={20}
                 onClick={() => console.log("Edit Report testing")}
                 />
 
                 <h1 className="text-2xl font-bold mb-3">
-                    {report.judul}
+                    {report?.judul || "Data Sudah Terhapus"}
                 </h1>
 
                 <div className="flex gap-3 mb-6">
                     <span 
-                    className={`px-3 py-1 rounded-lg text-sm font-medium ${priorityConfig[report.prioritas]}`}>
-                        {report.prioritas}
+                    className={`px-3 py-1 rounded-lg text-sm font-medium ${priorityConfig[report?.prioritas]}`}>
+                        {report?.prioritas.toUpperCase() || "Data Sudah Terhapus"}
                     </span>
 
                     <span 
-                    className={`px-3 py-1 rounded-lg text-sm font-medium ${statusConfig[report.status]}`}>
-                        {report.status}
+                    className={`flex items-center gap-2 px-3 py-1 rounded-lg text-sm font-medium ${statusConfig[report.status].className}`}
+                    >
+                        <StatusIcon/>
+                        {report?.status.toUpperCase() || "Data Sudah Terhapus"}
                     </span>
                 </div>
+
+                            <div className='grid grid-cols-2 gap-8 mb-6'>
+                                <div>
+                                <p className="font-semibold flex items-center gap-2">
+                                    <VscLocation/>
+                                    Ruangan
+                                </p>
+                                <p className="font-medium mb-2">{report?.room?.nama_ruang || "Data Terhapus"}</p>
+                                </div>
+
+                                <div>
+                                <p className="font-semibold flex items-center gap-2">
+                                    <TbCategory/>
+                                    Kategori
+                                </p>
+                                <p className="font-medium mb-4">{report?.category?.nama_kategori || "Data Terhapus"}</p>
+                                </div>
+
+                            </div>
 
                 <div className="grid md:grid-cols-2 gap-8">
                     <div>
@@ -157,19 +194,15 @@ function DetailReport() {
                     </div>
 
                     <div>
-                        <p className="font-semibold mb-1">Ruangan</p>
-                        <p className="mb-4">{report.room.nama_ruang}</p>
-
-                        <p className="font-semibold mb-1">Kategori</p>
-                        <p className="mb-4">{report.category.nama_kategori}</p>
-
-                        <p className="font-semibold mb-1">Deskripsi</p>
-                        <p className="mb-4">{report.deskripsi}</p>
+                        <p className="font-sembolibold mb-1">Deskripsi</p>
+                        <p className="mb-4 leading-relaxed">{report?.deskripsi || "Data Sudah Terhapus"}</p>
                     </div>
                 </div>
 
                 <div className="mt-10">
-                    <h2 className="flex items-center gap-2 font-semibold text-lg mb-4"><FaCommentDots/> Komentar</h2>
+                    <h2 className="flex items-center gap-2 font-semibold text-lg mb-4">
+                        <FaCommentDots/> Komentar
+                    </h2>
 
                     {report.comments.length === 0 ? (
                         <div className="flex items-center gap-3 text-gray-400">
@@ -178,13 +211,44 @@ function DetailReport() {
                         </div>
                     ) : (
                         <div className="space-y-3 mb-6">
-                            {report.comments.map((comment, index) => (
-                                <div 
-                                key={index}
-                                className="bg-gray-100 p-3 rounded-lg">
-                                    {comment.isi_komentar}
-                                </div>
-                            ))}
+                            {report.comments.map((comment) => {
+                                const isMine = Number(comment?.user?.id_user) === Number(userId);
+                                const RoleIcon = roleConfig[comment.user.role]?.icon;
+
+                                return (
+                                    <div 
+                                    key={comment.id_comments}
+                                    className="bg-gray-100 p-3 rounded-lg relative">
+                                        <div className="flex justify-between items-start mb-1">
+
+                                            <div className="flex gap-2 items-center">
+                                                <span className="font-semibold">
+                                                    {comment.user.nama}
+                                                </span>
+
+                                                <span className={`flex items-center gap-1 text-xs px-2 py-0.5 rounded ${roleConfig[comment.user.role]?.className}`}>
+                                                    {RoleIcon && <RoleIcon size={12}/>}
+                                                    {comment.user.role}
+                                                </span>
+
+                                            </div>
+
+                                            <div className="flex items-center gap-3">
+                                            <p className="text-center text-gray-400 text-xs flex justify-end">{formatDate(comment.createdAt)}</p>
+
+                                            {isMine && (
+                                                <CiEdit
+                                                className='cursor-pointer text-[#231f20] hover:text-[#4a4244]'
+                                                onClick={() => console.log("edit Comment test")}
+                                                />
+                                            )}
+                                            </div>
+                                        </div>
+
+                                        <p>{comment?.isi_komentar || "Data Sudah Terhapus"}</p>
+                                    </div>
+                                )
+                            })}
                         </div>
                     )}
 
@@ -199,7 +263,7 @@ function DetailReport() {
 
                         <button 
                         onClick={sendComment}
-                        className="bg-[#f59e0b] text-white px-6 py-2 rounded-lg hover:bg-[#cc8d20]">
+                        className="bg-[#f59e0b] cursor-pointer text-white px-6 py-2 rounded-lg hover:bg-[#f59e0b]">
                             Kirim
                         </button>
                     </div>
