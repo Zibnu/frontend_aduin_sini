@@ -13,6 +13,7 @@ import { VscLocation } from "react-icons/vsc";
 import { TbCategory } from "react-icons/tb";
 import { LiaUserAstronautSolid } from "react-icons/lia";
 import { FaUserGraduate } from "react-icons/fa";
+import EditReportModal from '../components/EditReportModal';
 
 function DetailReport() {
     const { id } = useParams();
@@ -21,6 +22,9 @@ function DetailReport() {
     const userId = Number(localStorage.getItem("userId"));
     // console.log(typeof(userId))
 
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [rooms, setRooms] = useState([]);
+    const [categories, setCategories] = useState([]);
     const [report, setReport] = useState(null);
     const [loading, setLoading] = useState(true);
     const [commentText, setCommentText] = useState("");
@@ -33,6 +37,7 @@ function DetailReport() {
                     Authorization : `Bearer ${token}`,
                 },
             });
+
             setReport(res.data.data);
             // console.log(res);
         } catch (error) {
@@ -43,8 +48,24 @@ function DetailReport() {
         }
     };
 
+    const fetchDataEditReport = async () => {
+        try {
+            const [catRes, roomRes] = await Promise.all([
+                apiServices.get("/category/get_all_category"),
+                apiServices.get("/room/get_all_room"),
+            ]);
+
+            setCategories(catRes.data.data);
+            setRooms(roomRes.data.data);
+        } catch (error) {
+            console.error(error);
+            toast.error(error.response?.data?.message || "Gagal Mendapatkan Data Rooms and Categories")
+        }
+    }
+
     useEffect(() => {
         fetchDetail();
+        fetchDataEditReport();
     }, [id]);
 
     const sendComment = async () => {
@@ -137,7 +158,7 @@ function DetailReport() {
                 <CiEdit
                 className='absolute top-6 right-6 cursor-pointer text-[#231f20] hover:text-[#4a4244]'
                 size={20}
-                onClick={() => console.log("Edit Report testing")}
+                onClick={() => setShowEditModal(true)}
                 />
 
                 <h1 className="text-2xl font-bold mb-3">
@@ -269,6 +290,16 @@ function DetailReport() {
                     </div>
                 </div>
             </div>
+
+            {/* Modal */}
+            <EditReportModal
+            isOpen={showEditModal}
+            onClose={() => setShowEditModal(false)}
+            report={report}
+            rooms={rooms}
+            categories={categories}
+            onSuccess={fetchDetail}
+            />
         </motion.div>
     )
 }
