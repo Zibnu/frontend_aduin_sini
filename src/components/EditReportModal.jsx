@@ -42,15 +42,47 @@ function EditReportModal({ isOpen, onClose, report, rooms = [], categories = [],
         }
     }, [report]);
 
-    const handleChange = (e) => {
-        const { name, value, files } = e.target;
+    // const handleChange = (e) => {
+    //     const { name, value, files } = e.target;
 
-        if (files) {
-            setForm((prev) => ({ ...prev, [name]: files[0] }));
-        } else {
-            setForm((prev) => ({ ...prev, [name]: value }));
+    //     if (files) {
+    //         setForm((prev) => ({ ...prev, [name]: files[0] }));
+    //     } else {
+    //         setForm((prev) => ({ ...prev, [name]: value }));
+    //     }
+    // };
+
+    const handleChange = (e) => {
+        setForm({
+            ...form,
+            [e.target.name] : e.target.value
+        });
+    }
+
+    const handleFile = (e) =>  {
+        const file = e.target.files[0];
+
+        if(!file) return;
+
+        const allowedtypes = [
+            "image/jpeg",
+            "image/jpg",
+            "image/png"
+        ];
+
+        if(!allowedtypes.includes(file.type)) {
+            toast.error("Format File hanya JPG, JPEG, dan PNG");
+            e.target.value = null; //reset input
+            return;
+        };
+
+        if(file.size > 5 * 1024 * 1024) {
+            toast.error("Ukuran Gambar Max 5Mb");
+            return;
         }
-    };
+
+        setForm({...form, foto : file});
+    }
 
     const handleSubmit = async () => {
         try {
@@ -93,7 +125,7 @@ function EditReportModal({ isOpen, onClose, report, rooms = [], categories = [],
                             exit={{ opacity: 0, scale: 0.8 }}
                             className="fixed inset-0 z-50 flex items-center justify-center p-4">
                             <div className="bg-white w-full max-w-3xl max-h-[90vh] rounded-lg p-6 shadow-lg overflow-y-auto ">
-                                <h2 className="text-xl font-semibold text-[#2563EB mb-4]">
+                                <h2 className="text-xl font-semibold text-[#2563EB] mb-4 gap-3]">
                                     Edit Laporan
                                 </h2>
 
@@ -164,13 +196,13 @@ function EditReportModal({ isOpen, onClose, report, rooms = [], categories = [],
                                         <label className="w-full mb-6 flex items-center gap-3 p-4 cursor-pointer rounded-lg border border-[#CBD5E1] placeholder-[#334155] focus:ring-2 focus:ring-[#3B82F6] outline-none transition">
                                             <MdOutlineCloudUpload/>
                                             <span>
-                                                {form.foto ? form.foto.name : "Upload Foto Kerusakan Baru"} <span className="text-red-500 text-xs">(MAX 5Mb)</span>
+                                                {form.foto ? form.foto.name : "Upload Foto Kerusakan Baru"} <span className="text-red-500 text-xs">(JPG/PNG MAX 5Mb)</span>
                                             </span>
                                             <input 
                                             type="file" 
                                             hidden
-                                            accept='image/*'
-                                            onChange={handleChange}
+                                            accept='.jpg, .jpeg, .png, image/jpeg, image/png'
+                                            onChange={handleFile}
                                             />
                                         </label>
 

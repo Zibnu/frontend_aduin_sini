@@ -14,6 +14,7 @@ import { TbCategory } from "react-icons/tb";
 import { LiaUserAstronautSolid } from "react-icons/lia";
 import { FaUserGraduate } from "react-icons/fa";
 import EditReportModal from '../components/EditReportModal';
+import EditCommentModal from '../components/EditCommentModal';
 
 function DetailReport() {
     const { id } = useParams();
@@ -23,6 +24,8 @@ function DetailReport() {
     // console.log(typeof(userId))
 
     const [showEditModal, setShowEditModal] = useState(false);
+    const [showEditComment, setShowEditComment] = useState(false);
+    const [selectedComment, setSelectedComment] = useState(null);
     const [rooms, setRooms] = useState([]);
     const [categories, setCategories] = useState([]);
     const [report, setReport] = useState(null);
@@ -260,7 +263,10 @@ function DetailReport() {
                                             {isMine && (
                                                 <CiEdit
                                                 className='cursor-pointer text-[#231f20] hover:text-[#4a4244]'
-                                                onClick={() => console.log("edit Comment test")}
+                                                onClick={() => {
+                                                    setSelectedComment(comment);
+                                                    setShowEditComment(true);
+                                                }}
                                                 />
                                             )}
                                             </div>
@@ -298,6 +304,13 @@ function DetailReport() {
             report={report}
             rooms={rooms}
             categories={categories}
+            onSuccess={fetchDetail}
+            />
+
+            <EditCommentModal
+            isOpen={showEditComment}
+            onClose={() => setShowEditComment(false)}
+            comment={selectedComment}
             onSuccess={fetchDetail}
             />
         </motion.div>

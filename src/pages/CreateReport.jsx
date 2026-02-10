@@ -49,6 +49,18 @@ function CreateReport() {
 
         if(!file) return;
 
+        const allowedTypes = [
+            "image/jpeg",
+            "image/jpg",
+            "image/png"
+        ];
+
+        if(!allowedTypes.includes(file.type)) {
+            toast.error("Format File hanya JPG, JPEG, dan PNG");
+            e.target.value = null; //reset input file
+            return;
+        }
+
         if(file.size > 5 * 1024 * 1024) {
             toast.error("Ukuran Gambar Max 5 Mb");
             return;
@@ -104,11 +116,11 @@ function CreateReport() {
         <motion.div
         initial={{opacity : 0, y : 20}}
         animate={{opacity : 1, y : 0}}
-        className='min-h-screen bg-[#ecedec] rounded-2xl p-8 flex justify-center'
+        className='min-h-screen bg-[#F1F5F9] rounded-2xl p-8 flex justify-center'
         >
             <form 
             onSubmit={handleSubmit}
-            className="w-full max-w-3xl bg-[#ecedec] rounded-2xl p-8 shadow">
+            className="w-full max-w-3xl bg-[#ffffff] rounded-2xl p-8 shadow">
                 <h2 className="text-2xl text-[#2563eb] font-bold mb-6">Buat Laporan Baru</h2>
 
                 <input 
@@ -184,12 +196,12 @@ function CreateReport() {
                     <label className='w-full mb-6 flex items-center gap-3 p-4 cursor-pointer rounded-lg border border-[#CBD5E1] placeholder-[#334155] focus:ring-2 focus:ring-[#3B82F6] outline-none transition'>
                         <MdOutlineCloudUpload />
                         <span>
-                            {form.foto ? form.foto.name : "Upload foto Kerusakan"} <span className='text-red-500 text-xs'>(MAX 5MB)</span>
+                            {form.foto ? form.foto.name : "Upload foto Kerusakan"} <span className='text-red-500 text-xs'>(JPG/PNG MAX 5MB)</span>
                         </span>
                         <input 
                         type="file" 
-                        hidden 
-                        accept='image/*' 
+                        hidden
+                        accept='.jpg, .jpeg, .png, image/jpeg, image/png' 
                         onChange={handleFile}
                         />
                     </label>
