@@ -9,6 +9,7 @@ import CreateReport from "../pages/CreateReport";
 import Notification from "../pages/Notification";
 import Profile from "../pages/Profile";
 import DetailReport from "../pages/DetailReport";
+import Dashboard from "../Admin/pages/Dashboard";
 
 export default function AppRouter () {
     return (
@@ -25,7 +26,7 @@ export default function AppRouter () {
             </Route>
 
             <Route element={<AdminLayout/>}>
-                {/* <Route path=""></Route> */}
+                <Route path="/admin/dashboard" element={<Dashboard/>}></Route>
             </Route>
         </Routes>
     );
