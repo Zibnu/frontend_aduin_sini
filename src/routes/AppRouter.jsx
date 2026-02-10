@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import UserLayout from "../layouts/UserLayout";
+import AdminLayout from "../layouts/AdminLayout";
 import Regis from "../pages/Regis";
 import Login from "../pages/Login";
 import Home from "../pages/Home";
@@ -21,6 +22,10 @@ export default function AppRouter () {
                 <Route path="/notifications" element={<Notification/>}></Route>
                 <Route path="/profil" element={<Profile/>}></Route>
                 <Route path="/history/:id" element={<DetailReport/>}></Route>
+            </Route>
+
+            <Route element={<AdminLayout/>}>
+                {/* <Route path=""></Route> */}
             </Route>
         </Routes>
     );
