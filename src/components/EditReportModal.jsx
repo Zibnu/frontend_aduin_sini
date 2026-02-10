@@ -7,6 +7,19 @@ import { MdOutlineCloudUpload } from "react-icons/md";
 function EditReportModal({ isOpen, onClose, report, rooms = [], categories = [], onSuccess }) {
     const token = localStorage.getItem("token");
 
+    useEffect(() => {
+        if(isOpen) {
+            document.body.classList.add('overflow-hidden');
+        } else {
+            document.body.classList.remove('overflow-hidden');
+        }
+
+        // clear function
+        return () => {
+            document.body.classList.remove('overflow-hidden');
+        };
+    }, [isOpen])
+
     const [form, setForm] = useState({
         judul: "",
         deskripsi: "",
@@ -73,21 +86,18 @@ function EditReportModal({ isOpen, onClose, report, rooms = [], categories = [],
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        onClick={onClose}
                         className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-40">
                         <motion.div
                             initial={{ opacity: 0, scale: 0.8 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.8 }}
                             className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                            <div className="bg-white w-full max-2xl rounded-xl p-6 shadow-md relative">
+                            <div className="bg-white w-full max-w-3xl max-h-[90vh] rounded-lg p-6 shadow-lg overflow-y-auto ">
                                 <h2 className="text-xl font-semibold text-[#2563EB mb-4]">
                                     Edit Laporan
                                 </h2>
 
-                                <form
-                                    onSubmit={handleSubmit}
-                                    className="space-y-4">
+                                <div className="space-y-4">
                                     <input
                                         name='judul'
                                         value={form.judul}
@@ -151,7 +161,7 @@ function EditReportModal({ isOpen, onClose, report, rooms = [], categories = [],
                                             ))}
                                         </select>
 
-                                        <label className="w-full mb-4 p-4 rounded-lg border border-[#CBD5E1] placeholder-[#334155] focus:ring-2 focus:ring-[#3B82F6] outline-none transition">
+                                        <label className="w-full mb-6 flex items-center gap-3 p-4 cursor-pointer rounded-lg border border-[#CBD5E1] placeholder-[#334155] focus:ring-2 focus:ring-[#3B82F6] outline-none transition">
                                             <MdOutlineCloudUpload/>
                                             <span>
                                                 {form.foto ? form.foto.name : "Upload Foto Kerusakan Baru"} <span className="text-red-500 text-xs">(MAX 5Mb)</span>
@@ -164,12 +174,20 @@ function EditReportModal({ isOpen, onClose, report, rooms = [], categories = [],
                                             />
                                         </label>
 
-                                        <button 
-                                        type='submit'
-                                        className="w-full bg-[#f59e0b] hover:bg-[#d88c07] text-white font-bold py-4 rounded-lg transition">
-                                            Simpan
-                                        </button>
-                                </form>
+                                        <div className="flex justify-end gap-2 mt-4">
+                                            <button 
+                                            type='button'
+                                            onClick={onClose}
+                                            className="px-4 py-2 bg-gray-300 rounded-lg cursor-pointer">
+                                                Kembali
+                                            </button>
+                                            <button 
+                                            onClick={handleSubmit}
+                                            className="px-4 py-2 bg-[#f59e0b] hover:bg-[#d88c07] text-white font-bold rounded-lg cursor-pointer transition">
+                                                Simpan
+                                            </button>
+                                        </div>
+                                </div>
                             </div>
                         </motion.div>
                     </motion.div>
