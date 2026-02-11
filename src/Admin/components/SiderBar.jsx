@@ -70,7 +70,7 @@ function SiderBar() {
 
             <button 
             onClick={handleLogout}
-            className={`mt-auto flex items-center ${
+            className={`mt-auto flex items-center cursor-pointer ${
                 isOpen ? "gap-3 px-4 justify-start" : "justify-center"
             } py-3 rounded-md bg-red-200 text-red-500 hover:bg-red-300 transition `}>
                 <AiOutlineLogout size={22}/>

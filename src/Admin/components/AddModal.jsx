@@ -52,7 +52,7 @@ function AddModal({open, type , onClose, onSuccess}) {
             setForm({});
         } catch (error) {
             console.error(error);
-            toast(error.response?.data?.message || "Gagal Menambahkan Data Resource");
+            toast.error(error.response?.data?.message || "Gagal Menambahkan Data Resource");
         } finally {
             setLoading(false);
         }
