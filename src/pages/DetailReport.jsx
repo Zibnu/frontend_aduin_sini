@@ -218,7 +218,7 @@ function DetailReport() {
                     </div>
 
                     <div>
-                        <p className="font-sembolibold mb-1">Deskripsi</p>
+                        <p className="font-semibold mb-1">Deskripsi</p>
                         <p className="mb-4 leading-relaxed">{report?.deskripsi || "Data Sudah Terhapus"}</p>
                     </div>
                 </div>

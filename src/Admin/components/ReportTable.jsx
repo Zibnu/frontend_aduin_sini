@@ -18,7 +18,7 @@ function ReportTable({reports, onStatusChange, onPriorityChange, onDetail, limit
 
             <tbody>
                 {reports.map((report, index) => (
-                    <tr key={report.id_report} className='border-t'>
+                    <tr key={report.id_report} className='border border-gray-300'>
                         <td>{(currentPage - 1) * limit + (index + 1)}</td>
                         <td>{report.user?.nama}</td>
                         <td>{report?.judul}</td>
@@ -51,7 +51,7 @@ function ReportTable({reports, onStatusChange, onPriorityChange, onDetail, limit
 
                         <td>
                             <button
-                            className='bg-[#f59e0b] text-white px-3 py-1 rounded'
+                            className='bg-[#f59e0b] text-white cursor-pointer px-3 py-1 rounded'
                             onClick={() => onDetail(report.id_report)}
                             >
                                 View

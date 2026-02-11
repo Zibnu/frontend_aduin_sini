@@ -9,6 +9,7 @@ import ReportDetailModal from '../components/ReportDetailModal'
 
 function ManageReport() {
     const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
 
     const [reports, setReports] = useState([]);
     const [page, setPage] = useState(1);
@@ -108,10 +109,18 @@ function ManageReport() {
             setPage={setPage}
             />
 
+            {detail && (
             <ReportDetailModal
-            data={detail}
-            onClose={() => setDetail(null)}
+            report={detail}
+            token={token}
+            userId={userId}
+            onClose={() => {
+                console.log("Click Close");
+                setDetail(null)
+            }}
+            onRefresh={fetchReports}
             />
+            )}
         </div>
     )
 }

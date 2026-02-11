@@ -1,26 +1,30 @@
 import React from 'react'
+import ReportDetailContent from './report/ReportDetailContent'
+import { motion } from 'framer-motion';
 
-function ReportDetailModal({data, onClose}) {
-    if(!data) return null;
+function ReportDetailModal({report, token, userId, onClose, onRefresh}) {
+    if(!report) return null;
+
     return (
-        <div className='fixed inset-0 bg-black/40 flex items-center justify-center'>
-            <div className="bg-[#ffffff] p-6 rounded-lg w-[500px]">
-                <h2 className="text-xl font-bold mb-4">{data.judul}</h2>
-
-                <img 
-                src={data.foto} 
-                alt="foto fasilitas rusak" 
-                className='w-full h-48 object-cover mb-4'
+        <div className='fixed inset-0 bg-black/40 flex justify-center items-center z-50'>
+            <motion.div 
+            initial={{scale : 0.8}}
+            animate={{scale : 1}}
+            onClick={(e) => e.stopPropagation()}
+            className="bg-white w-255 max-h-[90vh] overflow-y-auto rounded-lg p-6">
+                <ReportDetailContent
+                report={report}
+                token={token}
+                userId={userId}
+                onRefresh={onRefresh}
                 />
-
-                <p>{data.deskripsi}</p>
 
                 <button 
                 onClick={onClose}
-                className="mt-4 bg-gray-800 text-white px-4 py-2 rounded">
+                className="mt-6 bg-gray-600 text-white px-4 py-2 rounded">
                     Close
                 </button>
-            </div>
+            </motion.div>
         </div>
     )
 }
