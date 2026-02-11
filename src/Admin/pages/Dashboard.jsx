@@ -26,7 +26,7 @@ function Dashboard() {
                     },
                 });
 
-                console.log(res)
+                // console.log(res)
                 setData(res.data.data);
             } catch (error) {
                 console.error(error);

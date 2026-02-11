@@ -10,23 +10,79 @@ import Notification from "../pages/Notification";
 import Profile from "../pages/Profile";
 import DetailReport from "../pages/DetailReport";
 import Dashboard from "../Admin/pages/Dashboard";
+import ManageReport from "../Admin/pages/ManageReport";
+import ManageResource from "../Admin/pages/ManageResource";
+
+import AdminRoute from "./AdminRoute";
+import UserRoute from "./UserRoute";
+import GuestRoute from "./GuestRoute";
 
 export default function AppRouter () {
     return (
         <Routes>
-            <Route path="/regis" element={<Regis />} />
-            <Route path="/login" element={<Login/>}/>
+            <Route path="/regis" element={
+                <GuestRoute>
+                    <Regis />
+                </GuestRoute>
+                } />
+            <Route path="/login" element={
+                <GuestRoute>
+                    <Login/>
+                </GuestRoute>
+                }/>
+
             <Route element={<UserLayout/>}>
                 <Route path="/" element={<Home/>}></Route>
-                <Route path="/history" element={<History/>}></Route>
-                <Route path="/report" element={<CreateReport/>}></Route>
-                <Route path="/notifications" element={<Notification/>}></Route>
-                <Route path="/profil" element={<Profile/>}></Route>
-                <Route path="/history/:id" element={<DetailReport/>}></Route>
+
+                <Route path="/history" element={
+                    <UserRoute>
+                        <History/>
+                    </UserRoute>
+                    }/>
+
+                <Route path="/report" element={
+                    <UserRoute>
+                        <CreateReport/>
+                    </UserRoute>
+                    }/>
+
+                <Route path="/notifications" element={
+                    <UserRoute>
+                        <Notification/>
+                    </UserRoute>
+                    }/>
+
+                <Route path="/profil" element={
+                    <UserRoute>
+                        <Profile/>
+                    </UserRoute>
+                    }/>
+
+                <Route path="/history/:id" element={
+                    <UserRoute>
+                        <DetailReport/>
+                    </UserRoute>
+                    }/>
             </Route>
 
             <Route element={<AdminLayout/>}>
-                <Route path="/admin/dashboard" element={<Dashboard/>}></Route>
+                <Route path="/admin/dashboard" element={
+                    <AdminRoute>
+                        <Dashboard/>
+                    </AdminRoute>
+                    }/>
+                    
+                <Route path="/admin/reports" element={
+                    <AdminRoute>
+                        <ManageReport/>
+                    </AdminRoute>
+                    }/>
+
+                <Route path="/admin/resources" element={
+                    <AdminRoute>
+                        <ManageResource/>
+                    </AdminRoute>
+                    }/>
             </Route>
         </Routes>
     );
